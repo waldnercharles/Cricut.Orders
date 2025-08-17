@@ -5,6 +5,9 @@ namespace Cricut.Orders.Api.Mappings
 {
     public static class ToViewModelMappings
     {
+        public static OrderViewModel[] ToViewModel(this IEnumerable<Order> domainModels) =>
+            domainModels.Select(vm => vm.ToViewModel()).ToArray();
+        
         public static OrderViewModel ToViewModel(this Order domainModel)
         {
             return new OrderViewModel
@@ -15,7 +18,7 @@ namespace Cricut.Orders.Api.Mappings
                 Total = domainModel.Total
             };
         }
-
+        
         private static CustomerViewModel ToViewModel(this Customer domainModel)
         {
             return new CustomerViewModel
@@ -27,7 +30,7 @@ namespace Cricut.Orders.Api.Mappings
             };
         }
 
-        private static OrderItemViewModel[] ToViewModel(this IEnumerable<OrderItem> domainModels) =>
+        public static OrderItemViewModel[] ToViewModel(this IEnumerable<OrderItem> domainModels) =>
             domainModels.Select(vm => vm.ToViewModel()).ToArray();
 
         private static OrderItemViewModel ToViewModel(this OrderItem domainModel)

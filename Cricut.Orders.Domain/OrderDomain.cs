@@ -5,7 +5,7 @@ namespace Cricut.Orders.Domain
     public interface IOrderDomain
     {
         Task<Order> CreateNewOrderAsync(Order order);
-        Task<Order[]> GetOrdersByCustomerIdAsync(int customerId);
+        Task<IEnumerable<Order>> GetOrdersByCustomerIdAsync(int customerId);
     }
 
     public class OrderDomain : IOrderDomain
@@ -23,7 +23,7 @@ namespace Cricut.Orders.Domain
             return updatedOrder;
         }
 
-        public async Task<Order[]> GetOrdersByCustomerIdAsync(int customerId)
+        public async Task<IEnumerable<Order>> GetOrdersByCustomerIdAsync(int customerId)
         {
             return await _orderStore.GetAllOrdersForCustomerAsync(customerId);
         }

@@ -26,10 +26,10 @@ namespace Cricut.Orders.Api.Controllers
 
         // TODO: This endpoint might be better as v1/customers/{customerId}/orders
         [HttpGet("customer/{customerId}")]
-        public async Task<ActionResult<OrderViewModel[]>> GetOrdersByCustomerIdAsync(int customerId)
+        public async Task<ActionResult<IEnumerable<OrderViewModel>>> GetOrdersByCustomerIdAsync(int customerId)
         {
             var orders = await _orderDomain.GetOrdersByCustomerIdAsync(customerId);
-            var orderViewModels = orders.Select(order => order.ToViewModel()).ToArray();
+            var orderViewModels = orders.ToViewModel();
             return Ok(orderViewModels);
         }
     }
