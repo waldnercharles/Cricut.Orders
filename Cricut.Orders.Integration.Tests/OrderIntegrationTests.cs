@@ -92,6 +92,30 @@ namespace Cricut.Orders.Integration.Tests
         }
 
 
+        [DataTestMethod]
+        [DataRow(12345, true)]
+        [DataRow(54321, true)]
+        [DataRow(99999, false)]
+        public async Task GetOrdersByCustomerId_Returns_Orders_For_Customer(int customerId, bool shouldHaveOrders)
+        {
+            var client = OrdersApiTestClientFactory.CreateTestClient();
+
+            var response = await client.GetAsync($"v1/orders/customer/{customerId}");
+            response.IsSuccessStatusCode.Should().BeTrue();
+            var orders = await response.Content.ReadFromJsonAsync<OrderViewModel[]>();
+
+            orders.Should().NotBeNull();
+            if (shouldHaveOrders)
+            {
+                orders!.Length.Should().BeGreaterThan(0);
+            }
+            else
+            {
+                orders!.Length.Should().Be(0);
+            }
+            orders.All(o => o.Customer.Id == customerId).Should().BeTrue();
+        }
+
         private NewOrderViewModel CreateOrderWithItems(int numberOfLineItems, int quantityOfEachItem, double priceOfEachItem)
         {
             var orderItems = new AutoFaker<OrderItemViewModel>()
