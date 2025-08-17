@@ -11,7 +11,8 @@ namespace Cricut.Orders.Integration.Tests
         [DataTestMethod]
         [DataRow(3, 2, 1.5, false)]
         [DataRow(3, 2, 1.5, false)]
-        [DataRow(1, 1, 25, false)]
+        [DataRow(1, 1, 25, true)]
+        [DataRow(2, 1, 12.5, true)]
         [DataRow(3, 4, 8, true)]
         [DataRow(1, 1, 30, true)]
         public async Task CreateNewOrder_Does_Apply_Discount(int lineItems, int quantityOfEach, double priceOfEach, bool shouldApplyDiscount)
@@ -40,10 +41,10 @@ namespace Cricut.Orders.Integration.Tests
             }
         }
         
-                [TestMethod]
-        public async Task CreateNewOrder_Bug()
+        // The above test covers this one, but, I left it in for completeness.
+        [TestMethod]
+        public async Task CreateNewOrder_Does_Apply_Discount_When_Total_Is_Over_25()
         {
-            // Arrange - Reproduce the exact scenario from the bug report
             var newOrder = new NewOrderViewModel
             {
                 Customer = new CustomerViewModel
