@@ -39,6 +39,57 @@ namespace Cricut.Orders.Integration.Tests
                 order!.Total.Should().Be(expectedTotal);
             }
         }
+        
+                [TestMethod]
+        public async Task CreateNewOrder_Bug()
+        {
+            // Arrange - Reproduce the exact scenario from the bug report
+            var newOrder = new NewOrderViewModel
+            {
+                Customer = new CustomerViewModel
+                {
+                    Id = 1,
+                    Name = "John Doe",
+                    Address = "123 Street",
+                    Email = "john@cool.com"
+                },
+                OrderItems = new[]
+                {
+                    new OrderItemViewModel
+                    {
+                        Product = new ProductViewModel
+                        {
+                            Id = 1,
+                            Name = "Product 1",
+                            Price = 13.50
+                        },
+                        Quantity = 1
+                    },
+                    new OrderItemViewModel
+                    {
+                        Product = new ProductViewModel
+                        {
+                            Id = 2,
+                            Name = "Product 2",
+                            Price = 11.50
+                        },
+                        Quantity = 1
+                    }
+                }
+            };
+
+            var client = OrdersApiTestClientFactory.CreateTestClient();
+
+            var request = new HttpRequestMessage(HttpMethod.Post, "v1/orders");
+            request.Content = JsonContent.Create(newOrder);
+            
+            var response = await client.SendAsync(request);
+            response.IsSuccessStatusCode.Should().BeTrue();
+            
+            var order = await response.Content.ReadFromJsonAsync<OrderViewModel>();
+            order!.Total.Should().Be(22.50);
+        }
+
 
         private NewOrderViewModel CreateOrderWithItems(int numberOfLineItems, int quantityOfEachItem, double priceOfEachItem)
         {
